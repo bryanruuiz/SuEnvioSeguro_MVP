@@ -1,4 +1,6 @@
 using SuEnvioSeguro.API.Models;
+using SuEnvioSeguro.API.Exceptions;
+using SuEnvioSeguro.API.Shared;
 
 namespace SuEnvioSeguro.API.Services.States
 {
@@ -6,8 +8,12 @@ namespace SuEnvioSeguro.API.Services.States
     {
         public void ProcesarPaquete(Envio envio) 
         {
-            envio.Estado = "REGISTRADO";
-            // Lógica adicional cuando se registra
+            if (!string.IsNullOrWhiteSpace(envio.Estado) && envio.Estado != EstadosEnvio.Registrado)
+            {
+                throw new BusinessRuleException("Un envío ya procesado no puede volver al estado REGISTRADO.");
+            }
+
+            envio.Estado = EstadosEnvio.Registrado;
         }
     }
 }

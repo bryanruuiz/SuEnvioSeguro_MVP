@@ -13,10 +13,28 @@ namespace SuEnvioSeguro.API.Services.Singletons
             return _instancia;
         }
 
+        public void SincronizarConsecutivo(int ultimoConsecutivoRegistrado)
+        {
+            while (true)
+            {
+                var consecutivoActual = Volatile.Read(ref _contador);
+
+                if (consecutivoActual >= ultimoConsecutivoRegistrado)
+                {
+                    return;
+                }
+
+                if (Interlocked.CompareExchange(ref _contador, ultimoConsecutivoRegistrado, consecutivoActual) == consecutivoActual)
+                {
+                    return;
+                }
+            }
+        }
+
         public string GenerarSiguienteCodigo() 
         {
-            _contador++;
-            return $"FAC-{DateTime.Now.Year}-{_contador}";
+            var consecutivo = Interlocked.Increment(ref _contador);
+            return $"FAC-{DateTime.UtcNow:yyyyMMdd}-{consecutivo:D6}";
         }
     }
 }

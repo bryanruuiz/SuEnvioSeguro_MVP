@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuEnvioSeguro.API.Data;
 
@@ -11,9 +12,11 @@ using SuEnvioSeguro.API.Data;
 namespace SuEnvioSeguro.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502220506_IdentitiesAndBusinessRules")]
+    partial class IdentitiesAndBusinessRules
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +206,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Bello",
-                            TarifaBase = 6500f
+                            TarifaBase = 7000f
                         },
                         new
                         {
@@ -211,7 +214,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Caldas",
-                            TarifaBase = 7500f
+                            TarifaBase = 8000f
                         },
                         new
                         {
@@ -219,7 +222,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "La Estrella",
-                            TarifaBase = 6500f
+                            TarifaBase = 7000f
                         },
                         new
                         {
@@ -227,7 +230,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Copacabana",
-                            TarifaBase = 7500f
+                            TarifaBase = 8500f
                         },
                         new
                         {
@@ -235,7 +238,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Girardota",
-                            TarifaBase = 8000f
+                            TarifaBase = 9500f
                         },
                         new
                         {
@@ -321,7 +324,7 @@ namespace SuEnvioSeguro.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NombreUsuario")
+                    b.Property<string>("IdUsuario")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -331,9 +334,9 @@ namespace SuEnvioSeguro.API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.HasIndex("NombreUsuario")
+                    b.HasIndex("IdUsuario")
                         .IsUnique()
-                        .HasFilter("[NombreUsuario] IS NOT NULL");
+                        .HasFilter("[IdUsuario] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Usuario");
                 });

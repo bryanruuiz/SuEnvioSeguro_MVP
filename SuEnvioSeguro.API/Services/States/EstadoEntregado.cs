@@ -4,16 +4,16 @@ using SuEnvioSeguro.API.Shared;
 
 namespace SuEnvioSeguro.API.Services.States
 {
-    public class EstadoEnviado : IEstadoEnvio
+    public class EstadoEntregado : IEstadoEnvio
     {
         public void ProcesarPaquete(Envio envio)
         {
-            if (envio.Estado != EstadosEnvio.Registrado)
+            if (envio.Estado != EstadosEnvio.Enviado)
             {
-                throw new BusinessRuleException("Solo los envíos REGISTRADOS pueden pasar a ENVIADO.");
+                throw new BusinessRuleException("Solo los envíos ENVIADOS pueden pasar a ENTREGADO.");
             }
 
-            envio.Estado = EstadosEnvio.Enviado;
+            envio.Estado = EstadosEnvio.Entregado;
         }
     }
 }

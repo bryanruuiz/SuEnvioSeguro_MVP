@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuEnvioSeguro.API.Data;
 
@@ -11,9 +12,11 @@ using SuEnvioSeguro.API.Data;
 namespace SuEnvioSeguro.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502211627_AddMunicipios")]
+    partial class AddMunicipios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,50 +27,34 @@ namespace SuEnvioSeguro.API.Migrations
 
             modelBuilder.Entity("SuEnvioSeguro.API.Models.Envio", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CodigoEnvio")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<string>("CodigoEnvio")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.Property<string>("CodigoFactura")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DescripcionContenido")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DireccionEnvio")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EsDelicado")
                         .HasColumnType("bit");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int>("FacturaId")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MunicipioDestino")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Peso")
                         .HasColumnType("real");
@@ -75,36 +62,24 @@ namespace SuEnvioSeguro.API.Migrations
                     b.Property<float>("ValorNetoEnvio")
                         .HasColumnType("real");
 
-                    b.HasKey("Id");
+                    b.HasKey("CodigoEnvio");
 
-                    b.HasIndex("CodigoEnvio")
-                        .IsUnique();
-
-                    b.HasIndex("FacturaId");
+                    b.HasIndex("CodigoFactura");
 
                     b.ToTable("Envios");
                 });
 
             modelBuilder.Entity("SuEnvioSeguro.API.Models.Factura", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("CodigoFactura")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClienteDocumento")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CodigoFactura")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("ClienteDocumentoIdentidad")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
@@ -117,23 +92,23 @@ namespace SuEnvioSeguro.API.Migrations
 
                     b.Property<string>("UsuarioDocumento")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
+                    b.Property<string>("UsuarioDocumentoIdentidad")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<float>("ValorNeto")
                         .HasColumnType("real");
 
-                    b.HasKey("Id");
+                    b.HasKey("CodigoFactura");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("ClienteDocumento");
 
-                    b.HasIndex("CodigoFactura")
-                        .IsUnique();
+                    b.HasIndex("ClienteDocumentoIdentidad");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioDocumento");
+
+                    b.HasIndex("UsuarioDocumentoIdentidad");
 
                     b.ToTable("Facturas");
                 });
@@ -203,7 +178,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Bello",
-                            TarifaBase = 6500f
+                            TarifaBase = 7000f
                         },
                         new
                         {
@@ -211,7 +186,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Caldas",
-                            TarifaBase = 7500f
+                            TarifaBase = 8000f
                         },
                         new
                         {
@@ -219,7 +194,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "La Estrella",
-                            TarifaBase = 6500f
+                            TarifaBase = 7000f
                         },
                         new
                         {
@@ -227,7 +202,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Copacabana",
-                            TarifaBase = 7500f
+                            TarifaBase = 8500f
                         },
                         new
                         {
@@ -235,7 +210,7 @@ namespace SuEnvioSeguro.API.Migrations
                             Activo = true,
                             FechaCreacion = new DateTime(2026, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Nombre = "Girardota",
-                            TarifaBase = 8000f
+                            TarifaBase = 9500f
                         },
                         new
                         {
@@ -249,46 +224,31 @@ namespace SuEnvioSeguro.API.Migrations
 
             modelBuilder.Entity("SuEnvioSeguro.API.Models.Persona", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("DocumentoIdentidad")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Correo")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
 
-                    b.Property<string>("DocumentoIdentidad")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Telefono")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("DocumentoIdentidad")
-                        .IsUnique();
+                    b.HasKey("DocumentoIdentidad");
 
                     b.ToTable("Personas");
 
@@ -312,28 +272,17 @@ namespace SuEnvioSeguro.API.Migrations
                 {
                     b.HasBaseType("SuEnvioSeguro.API.Models.Persona");
 
-                    b.Property<bool>("Activo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.Property<string>("Contrasena")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NombreUsuario")
+                    b.Property<string>("IdUsuario")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rol")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasIndex("NombreUsuario")
-                        .IsUnique()
-                        .HasFilter("[NombreUsuario] IS NOT NULL");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Usuario");
                 });
@@ -342,7 +291,7 @@ namespace SuEnvioSeguro.API.Migrations
                 {
                     b.HasOne("SuEnvioSeguro.API.Models.Factura", "Factura")
                         .WithMany("Envios")
-                        .HasForeignKey("FacturaId")
+                        .HasForeignKey("CodigoFactura")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -352,16 +301,24 @@ namespace SuEnvioSeguro.API.Migrations
             modelBuilder.Entity("SuEnvioSeguro.API.Models.Factura", b =>
                 {
                     b.HasOne("SuEnvioSeguro.API.Models.Cliente", "Cliente")
-                        .WithMany("Facturas")
-                        .HasForeignKey("ClienteId")
+                        .WithMany()
+                        .HasForeignKey("ClienteDocumento")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SuEnvioSeguro.API.Models.Cliente", null)
+                        .WithMany("Facturas")
+                        .HasForeignKey("ClienteDocumentoIdentidad");
+
                     b.HasOne("SuEnvioSeguro.API.Models.Usuario", "Usuario")
-                        .WithMany("FacturasGeneradas")
-                        .HasForeignKey("UsuarioId")
+                        .WithMany()
+                        .HasForeignKey("UsuarioDocumento")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("SuEnvioSeguro.API.Models.Usuario", null)
+                        .WithMany("FacturasGeneradas")
+                        .HasForeignKey("UsuarioDocumentoIdentidad");
 
                     b.Navigation("Cliente");
 

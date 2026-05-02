@@ -1,0 +1,6 @@
+@SuEnvioSeguro.API_HostAddress = http://localhost:5096
+
+GET {{SuEnvioSeguro.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -18,6 +18,8 @@ const municipios = [
 ]
 
 const estados = ['ENVIADO', 'ENTREGADO', 'CANCELADO']
+const ALERT_TIMEOUTS = { error: 2000, ok: 2800 }
+const TRACKING_PAGE_SIZE = 8
 
 const empleadoVacio = {
   documentoIdentidad: '',
@@ -65,6 +67,7 @@ function App() {
   }, [sesion])
 
   const guardarSesion = (datos) => {
+    setAlerta(null)
     setSesion(datos)
     localStorage.setItem('suenvioseguro.session', JSON.stringify(datos))
   }
@@ -84,6 +87,17 @@ function App() {
   }, [])
 
   const mostrarOk = useCallback((texto) => setAlerta({ tipo: 'ok', texto }), [])
+  const limpiarAlerta = useCallback(() => setAlerta(null), [])
+
+  useEffect(() => {
+    if (!alerta) return undefined
+    const tiempo = ALERT_TIMEOUTS[alerta.tipo] ?? 2000
+    const temporizador = setTimeout(() => {
+      setAlerta((actual) => (actual === alerta ? null : actual))
+    }, tiempo)
+
+    return () => clearTimeout(temporizador)
+  }, [alerta])
 
   if (!sesion) {
     return (
@@ -91,6 +105,7 @@ function App() {
         api={api}
         onLogin={guardarSesion}
         onError={mostrarError}
+        onClearAlert={limpiarAlerta}
         onOk={mostrarOk}
         alerta={alerta}
       />
@@ -128,13 +143,14 @@ function App() {
   )
 }
 
-function InicioSesion({ api, onLogin, onError, onOk, alerta }) {
+function InicioSesion({ api, onLogin, onError, onClearAlert, onOk, alerta }) {
   const [login, setLogin] = useState({ nombreUsuario: '', contrasena: '' })
   const [trackingCodigo, setTrackingCodigo] = useState('')
   const [tracking, setTracking] = useState(null)
 
   const ingresar = async (event) => {
     event.preventDefault()
+    onClearAlert()
     try {
       const { data } = await api.post('/Auth/login', login)
       onLogin(data)
@@ -295,6 +311,18 @@ function Seguimiento({ api, onError, onOk }) {
   const [tracking, setTracking] = useState(null)
   const [envios, setEnvios] = useState([])
   const [estadoNuevo, setEstadoNuevo] = useState('ENVIADO')
+  const [paginaActual, setPaginaActual] = useState(1)
+
+  const totalPaginas = Math.max(1, Math.ceil(envios.length / TRACKING_PAGE_SIZE))
+  const inicioPagina = (paginaActual - 1) * TRACKING_PAGE_SIZE
+  const finPagina = inicioPagina + TRACKING_PAGE_SIZE
+  const enviosPaginados = useMemo(() => envios.slice(inicioPagina, finPagina), [envios, inicioPagina, finPagina])
+
+  useEffect(() => {
+    if (paginaActual > totalPaginas) {
+      setPaginaActual(totalPaginas)
+    }
+  }, [paginaActual, totalPaginas])
 
   const buscarPublico = async (event) => {
     event.preventDefault()
@@ -311,6 +339,7 @@ function Seguimiento({ api, onError, onOk }) {
     try {
       const { data } = await api.get('/Envio', { params: filtro })
       setEnvios(data)
+      setPaginaActual(1)
     } catch (error) {
       onError(error)
     }
@@ -377,7 +406,7 @@ function Seguimiento({ api, onError, onOk }) {
               </tr>
             </thead>
             <tbody>
-              {envios.map((envio) => (
+              {enviosPaginados.map((envio) => (
                 <tr key={envio.codigoEnvio} onClick={() => setCodigo(envio.codigoEnvio)}>
                   <td>{envio.codigoEnvio}</td>
                   <td>{envio.cliente}</td>
@@ -386,8 +415,27 @@ function Seguimiento({ api, onError, onOk }) {
                   <td>{formatoMoneda(envio.totalAPagar)}</td>
                 </tr>
               ))}
+              {!enviosPaginados.length && (
+                <tr>
+                  <td colSpan="5" className="muted">No hay envios para mostrar.</td>
+                </tr>
+              )}
             </tbody>
           </table>
+        </div>
+        <div className="pagination">
+          <p className="pagination-info">
+            Mostrando {envios.length ? inicioPagina + 1 : 0}-{Math.min(finPagina, envios.length)} de {envios.length}
+          </p>
+          <div className="pagination-actions">
+            <button type="button" className="secondary" onClick={() => setPaginaActual((actual) => Math.max(1, actual - 1))} disabled={paginaActual === 1}>
+              Anterior
+            </button>
+            <span>Pagina {paginaActual} de {totalPaginas}</span>
+            <button type="button" className="secondary" onClick={() => setPaginaActual((actual) => Math.min(totalPaginas, actual + 1))} disabled={paginaActual === totalPaginas}>
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
 
